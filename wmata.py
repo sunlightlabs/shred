@@ -1,21 +1,13 @@
 import requests
-
+from shred import Command
 
 STATION_CODE = 'A03'
 LINE_CODE = 'RD'
 
-class MetroCommand(object):
 
-    def __init__(self, app=None, token=None, key=None):
-        if app is not None:
-            self.init_app(app)
+class MetroCommand(Command):
 
-        self.key = key
-        self.token = token
-
-    def init_app(self, app):
-        app.extensions['MetroCommand'] = self
-        app.config['SLASH_COMMANDS']['metro'] = self
+    COMMAND = 'metro'
 
     def __call__(self, *args, **kwargs):
 
