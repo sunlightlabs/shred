@@ -6,15 +6,16 @@ LINE_CODE = 'RD'
 
 class MetroCommand(object):
 
-    def __init__(self, app=None):
+    def __init__(self, app=None, token=None, key=None):
         if app is not None:
             self.init_app(app)
+
+        self.key = key
+        self.token = token
 
     def init_app(self, app):
         app.extensions['MetroCommand'] = self
         app.config['SLASH_COMMANDS']['metro'] = self
-
-        self.key = app.config['WMATA_KEY']
 
     def __call__(self, *args, **kwargs):
 

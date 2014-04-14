@@ -9,21 +9,19 @@ COMMAND_PARAMS = ('team_id', 'channel_id', 'channel_name',
 
 
 app = Flask(__name__)
-app.config['SLACK_TOKEN'] = os.environ.get('SLACK_TOKEN')
 app.config['SLASH_COMMANDS'] = {}
 
-app.config['FORECASTIO_KEY'] = os.environ.get('FORECASTIO_KEY')
-weather.WeatherCommand(app)
+weather.WeatherCommand(app,
+    token=os.environ.get('WEATHER_TOKEN'),
+    key=os.environ.get('FORECASTIO_KEY'))
 
-app.config['WMATA_KEY'] = os.environ.get('WMATA_KEY')
-wmata.MetroCommand(app)
+wmata.MetroCommand(app,
+    token=os.environ.get('METRO_TOKEN'),
+    key=os.environ.get('WMATA_KEY'))
 
 
 @app.route('/command', methods=['GET', 'POST'])
 def slash_command():
-
-    if request.values.get('token') != app.config['SLACK_TOKEN']:
-        return abort(403)
 
     command = request.values.get('command', '')[1:]
 
@@ -32,7 +30,12 @@ def slash_command():
 
     params = {key: request.values.get(key) for key in COMMAND_PARAMS}
 
-    return app.config['SLASH_COMMANDS'][command](**params)
+    cmd = app.config['SLASH_COMMANDS'][command]
+
+    if request.values.get('token') != cmd.token:
+        return abort(403)
+
+    return cmd(**params)
 
 
 if __name__ == '__main__':
