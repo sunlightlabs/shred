@@ -20,7 +20,7 @@ class MetroCommand(Command):
 
         trains = []
 
-        for train in data['Trains'][:3]:
+        for train in data['Trains']:
             if train['Min'] == 'BRD':
                 pred = "%s is boarding." % (train['DestinationName'],)
             elif train['Min'] == 'ARR':
