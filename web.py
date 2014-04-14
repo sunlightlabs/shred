@@ -20,7 +20,8 @@ wmata.MetroCommand(app,
     token=os.environ.get('METRO_TOKEN'),
     key=os.environ.get('WMATA_KEY'))
 
-mbta.MBTACommuterRailCommand(app)
+mbta.MBTACommuterRailCommand(app
+    token=os.environ.get('MBTA_TOKEN'))
 
 
 @app.route('/command', methods=['GET', 'POST'])
