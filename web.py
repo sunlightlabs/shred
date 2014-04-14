@@ -2,6 +2,7 @@ import os
 
 import weather
 import wmata
+import mbta
 from flask import Flask, abort, jsonify, request
 
 COMMAND_PARAMS = ('team_id', 'channel_id', 'channel_name',
@@ -18,6 +19,8 @@ weather.WeatherCommand(app,
 wmata.MetroCommand(app,
     token=os.environ.get('METRO_TOKEN'),
     key=os.environ.get('WMATA_KEY'))
+
+mbta.MBTACommuterRailCommand(app)
 
 
 @app.route('/command', methods=['GET', 'POST'])

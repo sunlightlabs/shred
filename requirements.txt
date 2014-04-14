@@ -5,3 +5,4 @@ Werkzeug==0.9.4
 itsdangerous==0.24
 requests==2.2.1
 waitress==0.8.8
+humanize
