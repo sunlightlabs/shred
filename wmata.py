@@ -31,6 +31,8 @@ class MetroCommand(object):
         for train in data['Trains'][:3]:
             if train['Min'] == 'BRD':
                 pred = "%s is boarding." % (train['DestinationName'],)
+            elif train['Min'] == 'ARR':
+                pred = "%s is arriving." % (train['DestinationName'],)
             else:
                 pred = "%s in %s minutes." % (train['DestinationName'], train['Min'])
             trains.append(pred)
