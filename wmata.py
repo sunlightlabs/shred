@@ -25,9 +25,11 @@ class MetroCommand(Command):
                 pred = "%s is boarding." % (train['DestinationName'],)
             elif train['Min'] == 'ARR':
                 pred = "%s is arriving." % (train['DestinationName'],)
-            else:
+            elif train['Min']:
                 unit = 'minute' if train['Min'] == '1' else 'minutes'
                 pred = "%s in %s %s." % (train['DestinationName'], train['Min'], unit)
+            else:
+                pred = "%s in the future." % (train['DestinationName'],)
             trains.append(pred)
 
         return " ".join(trains) if trains else "No predictions available."
