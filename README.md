@@ -20,9 +20,9 @@ Run with [foreman](http://rubygems.org/gems/foreman):
 
     foreman start
 
-Shred is configured via environment variables. All variables are required, unless otherwise noted.
-
 ## Configuration
+
+Shred is configured via environment variables. All variables are required, unless otherwise noted.
 
 ### Slack
 
