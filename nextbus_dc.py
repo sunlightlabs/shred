@@ -6,7 +6,8 @@ from shred import Command
 import lxml, lxml.html
 
 ROUTES = {
-    'G2': 'http://www.nextbus.com/predictor/fancyBookmarkablePredictionLayer.shtml?a=wmata&stopId=1001436&r=G2&d=G2_G2_0&s=6465'
+    'G2': 'http://www.nextbus.com/predictor/fancyBookmarkablePredictionLayer.shtml?a=wmata&stopId=1001436&r=G2&d=G2_G2_0&s=6465',
+    'D6': 'http://www.nextbus.com/predictor/fancyBookmarkablePredictionLayer.shtml?a=wmata&stopId=1001386'
 }
 
 class NextbusPredictor(object):
