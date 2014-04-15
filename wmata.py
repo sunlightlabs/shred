@@ -22,6 +22,9 @@ class MetroCommand(Command):
 
         for train in data['Trains']:
 
+            if not train['DestinationName'] and not train['Min']:
+                continue
+
             name = train['DestinationName'] or 'An unknown train'
 
             if train['Min'] == 'BRD':
