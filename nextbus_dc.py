@@ -5,6 +5,10 @@ import requests
 from shred import Command
 import lxml, lxml.html
 
+ROUTES = {
+    'G2': 'http://www.nextbus.com/predictor/fancyBookmarkablePredictionLayer.shtml?a=wmata&stopId=1001436&r=G2&d=G2_G2_0&s=6465'
+}
+
 class NextbusPredictor(object):
     """Tracks Nextbus arrival times"""
     def __init__(self, routes):
@@ -17,7 +21,7 @@ class NextbusPredictor(object):
             self.predictions[r] = None
             self.last_refresh[r] = None
             self.refresh(r)
-    
+
     def _clean_prediction_html(self, html):
         return re.sub(r'&nbsp;','', re.sub(r'<[^>]*>','',(str(html)), flags=re.MULTILINE|re.DOTALL)).strip()
 
@@ -28,8 +32,8 @@ class NextbusPredictor(object):
             predictions = []
             nb_lxml = lxml.html.fromstring(html)
 
-            # get the primary/imminent prediction          
-            minutes = self._clean_prediction_html(nb_lxml.cssselect(".predictionNumberForFirstPred .right")[0].text.strip())    
+            # get the primary/imminent prediction
+            minutes = self._clean_prediction_html(nb_lxml.cssselect(".predictionNumberForFirstPred .right")[0].text.strip())
             if ('departing' in minutes.lower()) or ('arriving' in minutes.lower()):
                 predictions.append(0)
             else:
@@ -82,7 +86,7 @@ class NextbusPredictor(object):
                 # the expected arrival time
                 if (time.time() - self.last_refresh[r]) > self._get_query_frequency(self.predictions[r][0]):
                     self.refresh(r)
-    
+
     def _adjust_prediction_for_elapsed_time(self, prediction, r):
         return round(prediction - round((time.time() - self.last_refresh[r]) / 60.0))
 
@@ -92,8 +96,8 @@ class NextbusPredictor(object):
     def get_nth_closest_arrival(self, n=0, route=None):
         """Return the (route, arrival) pair that's happening soonest"""
         arrivals = []
-        for r in self.routes:           
-            if self.predictions.get(r) is not None:         
+        for r in self.routes:
+            if self.predictions.get(r) is not None:
                 for p in self.predictions.get(r, []):
                     valid_route = route is None
                     valid_route = valid_route or ((type(route) in (tuple, list)) and (r in route))
@@ -108,26 +112,38 @@ class NextbusPredictor(object):
         return (matching_arrival[1], self._adjust_prediction_for_elapsed_time(matching_arrival[0], matching_arrival[1]))
 
 
-class G2EastCommand(Command):
+class NextbusCommand(Command):
 
-    COMMAND = 'g2east'
+    COMMAND = 'bus'
 
     def __call__(self, *args, **kwargs):
 
-        nbp = NextbusPredictor({'G2': 'http://www.nextbus.com/predictor/fancyBookmarkablePredictionLayer.shtml?a=wmata&stopId=1001436&r=G2&d=G2_G2_0&s=6465'})
-        nbp.refresh('G2')
+        available_routes = sorted(ROUTES.keys())
+
+        route = kwargs.get('text')
+
+        if not route:
+            return "Please specify a route. Available routes: %s" % (", ".join(available_routes),)
+
+        route = route.strip().upper()
+
+        if route not in ROUTES:
+            return "Sorry, I don't know that route. Available routes: %s" % (", ".join(available_routes),)
+
+        nbp = NextbusPredictor(ROUTES)
+        nbp.refresh(route)
         next_prediction = None
         i = 0
-        while next_prediction is None and i<3:        
+        while next_prediction is None and i<3:
             next_prediction = nbp.get_nth_closest_arrival(i)
             i = i + 1
 
         if next_prediction is None:
             return "No prediction."
         else:
-            return "Next bus in %s minutes." % int(next_prediction[1])
+            return "Next %s bus in %s minutes." % (route, int(next_prediction[1]))
 
 
 if __name__ == '__main__':
-    g = G2EastCommand()
-    print g()
+    g = NextbusCommand()
+    print g(text='G2')
