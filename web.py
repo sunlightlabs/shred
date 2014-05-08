@@ -4,6 +4,7 @@ import weather
 import wmata
 import mbta
 import nextbus_dc
+import tcamp
 from flask import Flask, abort, jsonify, request
 
 COMMAND_PARAMS = ('team_id', 'channel_id', 'channel_name',
@@ -26,6 +27,8 @@ mbta.MBTACommuterRailCommand(app,
 
 nextbus_dc.NextbusCommand(app,
     token=os.environ.get('NEXTBUS_TOKEN'))
+
+tcamp.TCampCommand(app, token=os.environ.get('TCAMP_TOKEN'))
 
 
 @app.route('/command', methods=['GET', 'POST'])

@@ -30,6 +30,7 @@ Shred is configured via environment variables. All variables are required, unles
 |-----|-------------|
 | MBTA_TOKEN | Slack token for the /mbta command integration |
 | METRO_TOKEN | Slack token for the /metro command integration |
+| TCAMP_TOKEN | Slack token for the /tcamp command integration |
 | WEATHER_TOKEN | Slack token for the /weather command integration |
 
 ### External Services
