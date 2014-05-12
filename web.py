@@ -5,7 +5,7 @@ import wmata
 import mbta
 import nextbus_dc
 import tcamp
-from flask import Flask, abort, jsonify, request
+from flask import Flask, abort, jsonify, redirect, request
 
 COMMAND_PARAMS = ('team_id', 'channel_id', 'channel_name',
                   'user_id', 'user_name', 'text')
@@ -29,6 +29,11 @@ nextbus_dc.NextbusCommand(app,
     token=os.environ.get('NEXTBUS_TOKEN'))
 
 tcamp.TCampCommand(app, token=os.environ.get('TCAMP_TOKEN'))
+
+
+@app.route('/')
+def index():
+    return redirect('https://slack.com/')
 
 
 @app.route('/command', methods=['GET', 'POST'])
